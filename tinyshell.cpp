@@ -35,16 +35,18 @@ void help()
     std::cout << std::left << std::setw(35) << "3.  time" << "Display time" << std::endl;
     std::cout << std::left << std::setw(35) << "4.  dir" << "Display list of files in current Directory" << std::endl;
     std::cout << std::left << std::setw(35) << "5.  path" << "Display Environment Variable" << std::endl;
-    std::cout << std::left << std::setw(35) << "6.  addpath [new_path]" << "Add new path to Enviroment Variable" << std::endl;
+    std::cout << std::left << std::setw(35) << "6.  addpath [new_path]" << "Set new path to Enviroment Variable" << std::endl;
     std::cout << std::left << std::setw(35) << "7.  list" << "Display list of process " << std::endl;
     std::cout << std::left << std::setw(35) << "8.  kill [process_id]" << "Kill process with id equal to [process_id] " << std::endl;
     std::cout << std::left << std::setw(35) << "9.  killall" << "kill all process " << std::endl;
     std::cout << std::left << std::setw(35) << "10. stop [process_id]" << "Stop process with id equal to [process_id] " << std::endl;
     std::cout << std::left << std::setw(35) << "11. resume [process_id]" << "Resume process with id equal to [process_id] " << std::endl;
-    std::cout << std::left << std::setw(35) << "12. hello fore" << "Open file 'hello.exe' in foreground mode " << std::endl;
-    std::cout << std::left << std::setw(35) << "13. hello back" << "Open file 'hello.exe' in background mode " << std::endl;
-    std::cout << std::left << std::setw(35) << "14. [your_batch_file_name].bat" << "Excute [your_batch_file_name] " << std::endl;
-    std::cout << std::left << std::setw(35) << "15. calendar" << "You can determine which day of the week is today, tomorrow, or yesterday " << std::endl;
+    std::cout << std::left << std::setw(35) << "12. [your_file_name.exe] fore" << "Open file 'your_file_name.exe' in foreground mode " << std::endl;
+    std::cout << std::left << std::setw(35) << "13. [your_file_name.exe] back" << "Open file 'your_file_name.exe' in background mode " << std::endl;
+    std::cout << std::left << std::setw(35) << "14. [your_file_name.exe] " << "Open file 'your_file_name.exe' in background mode " << std::endl;
+    std::cout << std::left << std::setw(35) << "15. [your_batch_file_name].bat" << "Excute [your_batch_file_name] " << std::endl;
+    std::cout << std::left << std::setw(35) << "16. cls" << "Clear Screen " << std::endl;
+    std::cout << std::left << std::setw(35) << "17. calendar" << "You can determine which day of the week is today, tomorrow, or yesterday " << std::endl;
     std::cout<<"_______________________________________________________________________________________________"<<std::endl;
 }
 
@@ -88,66 +90,22 @@ void dir2()
     }
 }
 
-// void killp(std::string process)
-// {
-//     int id = std::atoi(process.c_str());
-//     bool flag = true;
-//     for (int i = 1; i <= numberProcess; i++)
-//     {
-//         if (Processs[i].dwProcessId == id)
-//         {
-//             TerminateProcess(Processs[i].hProcess, 0);
-//             CloseHandle(Processs[i].hThread);
-//             CloseHandle(Processs[i].hProcess);
-
-//             std::cout<<"Process "<<cString[i]<< " is killed"<<std::endl;
-//             for (int j = i; j < numberProcess; j++)
-//             {
-//                 status[j] = status[j+1];
-//                 Processs[j] = Processs[j+1];
-//                 SUInfo[j] = SUInfo[j+1];
-//                 cString[j] = cString[j+1];
-//             }
-//             numberProcess = numberProcess - 1;
-//             flag = false;
-//         }
-//     }
-//     if (flag)
-//     {
-//         std::cout<<std::endl<<"Cannot find this process with id = "<<id;
-//     }
-// }
-
 void kill(int id) {
     HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, id);
-    if (hProcess == NULL) {
-        std::cout << "Không thể mở handle đến tiến trình." << std::endl;
-        return;
-    }
 
-    if (TerminateProcess(hProcess, 0)) {
-        std::cout << "Tiến trình với PID " << id << " đã bị kết thúc." << std::endl;
-    } else {
-        std::cout << "Không thể kết thúc tiến trình với PID " << id << "." << std::endl;
+    if (TerminateProcess(hProcess, 0)) 
+    {
+        std::cout<<"Process with id = "<<id<<" has been killed";
+    } else 
+    {
+        std::cout<<std::endl<<"Cannot find this process with id = "<<id;
     }
 
     CloseHandle(hProcess);
 }
 
-void killAll()
-{
-    for (int i = 1; i <= numberProcess; i++)
-    {
-        TerminateProcess(Processs[i].hProcess, 0);
-        CloseHandle(Processs[i].hThread);
-        CloseHandle(Processs[i].hProcess);
-    }
-    std::cout<<std::endl<<"All process have been killed."<<std::endl;
-}
-
 void ProcessinBackgroundMode(const std::string &process)
 {
-    void killp(std::string process);
     numberProcess = numberProcess + 1;
     status[numberProcess] = 1;
     SUInfo[numberProcess] = {sizeof(STARTUPINFO)};
@@ -166,22 +124,19 @@ void ProcessinBackgroundMode(const std::string &process)
     }
 }
 
+void clearScreen()
+{
+#ifdef _WIN32
+    // Lệnh cls để xóa màn hình trong Windows
+    std::system("cls");
+#else
+    // Lệnh clear để xóa màn hình trong Linux và macOS
+    std::system("clear");
+#endif
+}
+
 void ProcessinForegroundMode(const std::string &process)
 {
-    // PROCESS_INFORMATION process1;
-    // STARTUPINFO SUinfo1 = {sizeof(STARTUPINFO)};
-    // LPSTR cStr1 = strdup(process.c_str());
-    // // STARTUPINFOA 
-    // SUInfo[numberProcess];
-    // ZeroMemory(&SUInfo[numberProcess], sizeof(SUInfo[numberProcess]));
-    // SUInfo[numberProcess].cb = sizeof(SUInfo[numberProcess]);
-    // if (!CreateProcessA(cStr1, NULL, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, SUInfo, Processs))
-    // {
-    //     std::cout<<std::endl<<"Cannot open this file.";
-    //     return;
-    // }
-//test
-    void killp(std::string process);
     numberProcess = numberProcess + 1;
     status[numberProcess] = 1;
     SUInfo[numberProcess] = {sizeof(STARTUPINFO)};
@@ -199,12 +154,6 @@ void ProcessinForegroundMode(const std::string &process)
         return;
     }
     WaitForSingleObject(Processs[numberProcess].hProcess, INFINITE);
-    // CloseHandle(process.hThread);
-    // CloseHandle(process.hProcess);
-//test end
-    // WaitForSingleObject(process1.hProcess, INFINITE);
-    // CloseHandle(process1.hThread);
-    // CloseHandle(process1.hProcess);
 }
 
 void ProcessBackgroundOrForeground(const std::string &command, const std::string &process)
@@ -226,6 +175,36 @@ void ProcessBackgroundOrForeground(const std::string &command, const std::string
         std::cout<<std::endl<<"Bug!!";
     }
 
+}
+
+void killAll()
+{
+    for (int i = 1; i <= numberProcess; ++i)
+    {
+        DWORD dwe;
+        GetExitCodeProcess(Processs[i].hProcess, &dwe);
+        if (dwe != 259)
+        {
+            TerminateProcess(Processs[i].hProcess, 0);
+            CloseHandle(Processs[i].hThread);
+            CloseHandle(Processs[i].hProcess);
+            for (int j = i; j < numberProcess; j++)
+            {
+                status[j] = status[j+1];
+                Processs[j] = Processs[j+1];
+                SUInfo[j] = SUInfo[j+1];
+                cString[j] = cString[j+1];
+            }
+            numberProcess = numberProcess - 1;
+            i = i - 1;
+        }
+        else
+        {
+            int x = static_cast<int>(Processs[i].dwProcessId);
+            kill(x);
+        }
+    }
+    std::cout << std::endl << "All process have been killed." << std::endl;
 }
 
 void showList()
@@ -405,16 +384,16 @@ void processCommand(const std::string& command) {
         }
     }
     else if (tokens[0] == "addpath") {
-        if (tokens.size() >= 2) {
-            if (SetEnvironmentVariableA("PATH", tokens[1].c_str()))
-            {
-                std::cout << "PATH set to: " << tokens[1] << std::endl;
-            }
-            else 
-            {
-                std::cerr << "Failed to set PATH." << std::endl;
-            }
+    if (tokens.size() >= 2) {
+        if (SetEnvironmentVariableA("PATH", tokens[1].c_str()))
+        {
+            std::cout << "PATH set to: " << tokens[1] << std::endl;
         }
+        else 
+        {
+            std::cerr << "Failed to set PATH." << std::endl;
+        }
+    }
         else {
             std::cerr << "Usage: addpath <new_path>" << std::endl;
         }
@@ -424,23 +403,10 @@ void processCommand(const std::string& command) {
     }
     else if (tokens[0] == "kill") 
     {
-        // if (tokens.size() >= 2) {
+        int id;
+        id = std::stoi(tokens[1]);
+        kill(id);
 
-            // std::string process = "";
-            // for (int i = 0; i < tokens[1].size(); i++)
-            // {
-            //     process = process + tokens[1][i];
-            // }
-    //test
-            int id;
-            std::cin>>id;
-            kill(id);
-    //test end
-            // killp(process);
-        // }
-        // else {
-        //     std::cerr << "Usage: kill <Process_id>" << std::endl;
-        // }
     }
     else if (tokens[0] == "killall")
     {
@@ -492,12 +458,29 @@ void processCommand(const std::string& command) {
             ProcessBackgroundOrForeground(command, s);
     }
 //test
-    else if ((tokens[0].compare("hello") == 0) and (tokens[1].compare("fore") == 0 || tokens[1].compare("back") == 0))
+    else if (tokens[0].find(".exe") != std::string::npos)
     {
-            std::string s = "hello.exe";
+        if (tokens.size() == 1)
+        {
+            std::string command = tokens[0] + " back";
+            ProcessBackgroundOrForeground(command, tokens[0]);
+        }
+        else if (tokens[1].compare("fore") == 0 || tokens[1].compare("back") == 0)
+        {
+            std::string s = tokens[0];
             ProcessBackgroundOrForeground(command, s);
+        }
+        else
+        {
+            std::cout<<"Wrong";
+        }
     }
-//test end    
+
+    else if ((tokens[0] == "cls") or (tokens[0] == "clear"))
+    {
+        clearScreen();
+    }
+
     else if (tokens[0] == "calendar")
     {
         std::cout<<"|   Welcome to Calendar   |";
@@ -535,6 +518,6 @@ int main() {
 
         processCommand(command);
     }
-    killAll();//tắt tất cả process trước khi return 0
+    killAll();
     return 0;
 }

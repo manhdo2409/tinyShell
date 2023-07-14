@@ -1,5 +1,4 @@
 dir
-
 help
-note fore
+hello.exe back
 list
